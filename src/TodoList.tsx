@@ -1,4 +1,5 @@
 import React, {FC} from 'react';
+import {FilterType} from "./App";
 
 export type TaskType = {
     id: number
@@ -8,16 +9,31 @@ export type TaskType = {
 
 type TodoListProps = {
     todoListTitle: string
-    tasks: TaskType[]
+    filteredTasks: TaskType[]
+    removeTask: (tasksId: number) => void
+    setFilter: (filter: FilterType) => void
 }
 
 
 export const TodoList: FC<TodoListProps> = (
     {
         todoListTitle,
-        tasks
+        filteredTasks,
+        removeTask,
+        setFilter
     }
 ) => {
+
+    const listItems: React.ReactElement[] = filteredTasks.map((task) => {
+            const onClickRemoveTaskHandler = () => removeTask(task.id)
+
+            return <li key={task.id}>
+                <input type="checkbox" checked={task.isDone}/>
+                <span>{task.taskTitle}</span>
+                <button onClick={onClickRemoveTaskHandler}>X</button>p
+            </li>
+        })
+
     return (
         <div className={'todolist'}>
             <h3>{todoListTitle}</h3>
@@ -25,15 +41,14 @@ export const TodoList: FC<TodoListProps> = (
                 <input/>
                 <button>+</button>
             </div>
-            <ul>
-                <li><input type="checkbox" checked={tasks[0].isDone}/> <span>{tasks[0].taskTitle}</span></li>
-                <li><input type="checkbox" checked={tasks[1].isDone}/> <span>{tasks[1].taskTitle}</span></li>
-                <li><input type="checkbox" checked={tasks[2].isDone}/> <span>{tasks[2].taskTitle}</span></li>
-            </ul>
+            {filteredTasks.length
+                ? <ul>{listItems}</ul>
+                : <span>Your tasksList is empty</span>
+            }
             <div>
-                <button>All</button>
-                <button>Active</button>
-                <button>Completed</button>
+                <button onClick={() => setFilter('all')}>All</button>
+                <button onClick={() => setFilter('active')}>Active</button>
+                <button onClick={() => setFilter('completed')}>Completed</button>
             </div>
         </div>
     )
