@@ -24,21 +24,35 @@ export function App() {
         filteredTasks = tasks.filter((task) => task.isDone)
     }
 
-    const removeTask = (taskId: string) => {
-        setTasks(tasks.filter((task) => task.id !== taskId))
-    }
-    const onChangeFilter = (newFilterValue: FilterType) => {
-        setFilter(newFilterValue)
-    }
+    // CRUD
     const addTask = (newTitle: string) => {
         const newTask: TaskType = {id: crypto.randomUUID(), isDone: false, taskTitle: newTitle}
         setTasks([newTask, ...tasks])
     }
+    const changeTaskStatus = (taskId: string, newStatus: boolean) => {
+        setTasks(tasks.map((task) => task.id === taskId ? {...task, isDone: newStatus} : task))
+    }
+    // const changeTaskTitle = () => {
+    //
+    // }
+    const removeTask = (taskId: string) => {
+        setTasks(tasks.filter((task) => task.id !== taskId))
+    }
+
+    const onChangeFilter = (newFilterValue: FilterType) => {
+        setFilter(newFilterValue)
+    }
 
     return (
         <div className="App">
-            <TodoList todoListTitle={'Что купить'} filteredTasks={filteredTasks} removeTask={removeTask}
-                      onChangeFilter={onChangeFilter} addTask={addTask}/>
+            <TodoList todoListTitle={'Что купить'}
+                      filteredTasks={filteredTasks}
+                      removeTask={removeTask}
+                      onChangeFilter={onChangeFilter}
+                      addTask={addTask}
+                      changeTaskStatus={changeTaskStatus}
+                      filter={filter}
+            />
         </div>
     );
 }

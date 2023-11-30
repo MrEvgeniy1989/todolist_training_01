@@ -16,3 +16,22 @@
     padding: 15px;
     height: max-content;
 }
+
+.task {
+    font-weight: bold;
+}
+.task-done {
+    text-decoration: line-through;
+    opacity: 0.5;
+}
+.btn-active {
+    background-color: chocolate;
+    color: white;
+    border-radius: 3px;
+    border: none;
+}
+
+.input-error {
+    border: 2px solid red;
+    outline: none;
+}
