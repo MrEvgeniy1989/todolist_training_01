@@ -7,17 +7,15 @@ export type FilterType = "all" | "active" | "completed"
 export function App() {
 
     const [tasks, setTasks] = useState<TaskType[]>([
-        {id: 1, isDone: true, taskTitle: 'HTML&CSS'},
-        {id: 2, isDone: true, taskTitle: 'JS/TS'},
-        {id: 3, isDone: false, taskTitle: 'REACT'},
-        {id: 4, isDone: true, taskTitle: 'REDUX'},
+        {id: crypto.randomUUID(), isDone: true, taskTitle: 'HTML&CSS'},
+        {id: crypto.randomUUID(), isDone: true, taskTitle: 'JS/TS'},
+        {id: crypto.randomUUID(), isDone: false, taskTitle: 'REACT'},
+        {id: crypto.randomUUID(), isDone: true, taskTitle: 'REDUX'},
     ])
 
     const [filter, setFilter] = useState<FilterType>("all")
 
-    const removeTask = (taskId: number) => {
-        setTasks(tasks.filter((task) => task.id !== taskId))
-    }
+
 
     let filteredTasks: TaskType[] = tasks
     if (filter === "active") {
@@ -26,10 +24,21 @@ export function App() {
         filteredTasks = tasks.filter((task) => task.isDone)
     }
 
+    const removeTask = (taskId: string) => {
+        setTasks(tasks.filter((task) => task.id !== taskId))
+    }
+    const onChangeFilter = (newFilterValue: FilterType) => {
+        setFilter(newFilterValue)
+    }
+    const addTask = (newTitle: string) => {
+        const newTask: TaskType = {id: crypto.randomUUID(), isDone: false, taskTitle: newTitle}
+        setTasks([newTask, ...tasks])
+    }
+
     return (
         <div className="App">
             <TodoList todoListTitle={'Что купить'} filteredTasks={filteredTasks} removeTask={removeTask}
-                      setFilter={setFilter}/>
+                      onChangeFilter={onChangeFilter} addTask={addTask}/>
         </div>
     );
 }
