@@ -16,3 +16,16 @@
     padding: 15px;
     height: max-content;
 }
+
+.task-done {
+    text-decoration: line-through;
+    opacity: 0.5;
+}
+
+.input-error {
+    border: 2px solid red;
+}
+
+.filter-active {
+    background-color: blueviolet;
+}
