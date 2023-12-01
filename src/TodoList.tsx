@@ -1,39 +1,81 @@
-import React, {FC} from 'react';
+import React, {ChangeEvent, FC, useState} from 'react';
+import {FilterType, TaskType} from "./App";
 
-export type TaskType = {
-    id: number
-    isDone: boolean
-    taskTitle: string
-}
-
-type TodoListProps = {
-    todoListTitle: string
+type TodoListType = {
+    todoTitle: string
     tasks: TaskType[]
+    filter: FilterType
+    changeFilter: (newFilter: FilterType) => void
+    addTask: (netTaskTitle: string) => void
+    changeTaskStatus: (taskId: string, newTaskStatus: boolean) => void
+    deleteTask: (taskId: string) => void
 }
 
 
-export const TodoList: FC<TodoListProps> = (
-    {
-        todoListTitle,
-        tasks
-    }
-) => {
+export const TodoList: FC<TodoListType> = ({
+                                               todoTitle,
+                                               tasks,
+                                               filter,
+                                               changeFilter,
+                                               addTask,
+                                               changeTaskStatus,
+                                               deleteTask
+                                           }) => {
+
+    const [newTaskTitle, setNewTaskTitle] = useState('')
+    const [error, setError] = useState('')
+
+    const TaskList = tasks.map((task) => {
+        const onClickDeleteTaskHandler = () => deleteTask(task.id)
+        const onChangeTaskStatusHandler = (event: ChangeEvent<HTMLInputElement>) => changeTaskStatus(task.id, event.currentTarget.checked)
+
+        return (
+            <li key={task.id}>
+                <input
+                    type="checkbox"
+                    checked={task.isDone}
+                    onChange={onChangeTaskStatusHandler}
+                />
+                <span className={task.isDone ? "task-done" : ''}>{task.taskTitle}</span>
+                <button onClick={onClickDeleteTaskHandler}>X</button>
+            </li>
+        )
+    })
+
+    const onChangeNewTaskTitleHandler = (event: ChangeEvent<HTMLInputElement>) => {
+        error && setError('')
+        setNewTaskTitle(event.currentTarget.value)
+    };
+    const onClickAddTaskHandler = () => {
+        if (newTaskTitle.trim()) {
+            addTask(newTaskTitle.trim())
+        } else setError('Название задания не может быть пустым!')
+        setNewTaskTitle('')
+    };
     return (
         <div className={'todolist'}>
-            <h3>{todoListTitle}</h3>
+            <h3>{todoTitle}</h3>
             <div>
-                <input/>
-                <button>+</button>
+                <input value={newTaskTitle} onChange={onChangeNewTaskTitleHandler}
+                       className={error ? "input-error" : ''}/>
+                <button onClick={onClickAddTaskHandler} disabled={!newTaskTitle}>+
+                </button>
+                <div>{error ? error : ''}</div>
             </div>
-            <ul>
-                <li><input type="checkbox" checked={tasks[0].isDone}/> <span>{tasks[0].taskTitle}</span></li>
-                <li><input type="checkbox" checked={tasks[1].isDone}/> <span>{tasks[1].taskTitle}</span></li>
-                <li><input type="checkbox" checked={tasks[2].isDone}/> <span>{tasks[2].taskTitle}</span></li>
-            </ul>
+
+            {tasks.length
+                ? <ul>{TaskList}</ul>
+                : <span>Your todolist is empty!</span>
+            }
             <div>
-                <button>All</button>
-                <button>Active</button>
-                <button>Completed</button>
+                <button className={filter === "all" ? "filter-active" : ''} onClick={() => changeFilter("all")}>All
+                </button>
+                <button className={filter === "active" ? "filter-active" : ''}
+                        onClick={() => changeFilter("active")}>Active
+                </button>
+                <button className={filter === "completed" ? "filter-active" : ''}
+                        onClick={() => changeFilter("completed")}>Completed
+                </button>
             </div>
         </div>
     )
