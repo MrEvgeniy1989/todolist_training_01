@@ -11,6 +11,7 @@ type TodoListType = {
     deleteTask: (taskId: string) => void
 }
 
+
 export const TodoList: FC<TodoListType> = ({
                                                todoTitle,
                                                tasks,
