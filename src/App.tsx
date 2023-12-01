@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import './App.css';
-import {TodoList} from "./TodoLIst";
+import {TodoList} from "./TodoList";
 
 export type TaskType = {
     id: string
